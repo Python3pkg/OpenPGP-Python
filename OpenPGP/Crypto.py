@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 from struct import pack, unpack
 import Crypto.Random
 import Crypto.Random.random
@@ -399,7 +399,7 @@ class Wrapper:
         if isinstance(packet, OpenPGP.Packet) or isinstance(packet, OpenPGP.Message) or isinstance(packet, Crypto.PublicKey.RSA._RSAobj) or isinstance(packet, Crypto.PublicKey.DSA._DSAobj):
             return packet
         elif isinstance(packet, tuple) or isinstance(packet, list):
-            if sys.version_info[0] == 2 and isinstance(packet[0], long) or isinstance(packet[0], int):
+            if sys.version_info[0] == 2 and isinstance(packet[0], int) or isinstance(packet[0], int):
                 data = []
                 for i in packet:
                     data.append(Crypto.Util.number.long_to_bytes(i)) # OpenPGP likes bytes

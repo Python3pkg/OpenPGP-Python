@@ -120,7 +120,7 @@ def enarmor(data, marker='PUBLIC KEY BLOCK', headers=None, lineWidth=64):
         yield '-----BEGIN PGP ' + str(marker).upper() + '-----'
         headersDict = headers or {}
         try:
-            headerItems = list(headersDict.iteritems())
+            headerItems = list(headersDict.items())
             headerItems.sort()
         except AttributeError: # list has no 'iteritems'
             headerItems = list(headersDict) # already list of key-value.pairs
@@ -299,7 +299,7 @@ class PushbackGenerator(object):
     def __iter__(self):
         return self
 
-    def next(self):
+    def __next__(self):
         return self.__next__()
 
     def __next__(self):
@@ -370,7 +370,7 @@ class Message(object):
 
         for p in msg:
             if isinstance(p, LiteralDataPacket):
-                return [(p, list(filter(lambda x: isinstance(x, SignaturePacket), msg)))]
+                return [(p, list([x for x in msg if isinstance(x, SignaturePacket)]))]
             elif isinstance(p, PublicSubkeyPacket) or isinstance(p, SecretSubkeyPacket):
                 if userid:
                     final_sigs.append((key, userid, sigs))
@@ -738,7 +738,7 @@ class SignaturePacket(Packet):
         data = signer(self.data + self.trailer)
         self.data = []
         for mpi in data:
-            if sys.version_info[0] == 2 and isinstance(mpi, long) or isinstance(mpi, int):
+            if sys.version_info[0] == 2 and isinstance(mpi, int) or isinstance(mpi, int):
                 if hasattr(mpi, 'to_bytes'):
                     self.data.append(mpi.to_bytes(ceil(mpi.bit_length() / 8), byteorder='big'))
                 else: # For python 2
